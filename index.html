@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Zak's Digital Bookshelf</title>
+    <style>
+    body {
+      margin: 0px;
+    }
+    </style>
+    <script type="module" src="book/book.js"></script>
+    <script src="xml2json.js" charset="utf-8"></script>
+    <script type='text/javascript' src='config.secret'></script>
+    <script type="text/javascript">
+
+    window.onload = function(){if (!navigator.onLine) {
+      const offlineNotice = document.createElement("h1");
+      offlineNotice.innerHTML = "No network connection detected";
+      document.body.appendChild(offlineNotice);
+      const snark = document.createElement("h3");
+      offlineNotice.innerHTML = "If the dev were smart he would use service workers";
+      document.body.appendChild(snark);
+    }else{
+      //all in pixels
+      const maxBookHeight = 400;
+      const minBookHeight = 250;
+      const h = window.innerHeight;
+      const w = window.innerWidth;
+      const idealHeight = h/2; //TODO Actually calculate this
+      //calculate number of books that ideally fit in the window
+      const bookQuantity = 12;
+      var bookData = fetch("https://cors-anywhere.herokuapp.com/https://www.goodreads.com/review/list?v=2 &id=63770517&key="+secret.key+"&shelf=read&sort=random&per_page="+bookQuantity,
+      {mode: "cors",
+      headers:new Headers({'origin': 'localhost'})
+      })
+      .then(function(blob){return blob.text();})
+      .then(function(response) {return JSON.parse(xml2json((new DOMParser()).parseFromString(response, "text/xml"),'\t'))})
+      .then(function(jsonData) {
+        const books = jsonData.GoodreadsResponse.reviews.review.map(review => review.book);
+        for (book of books) {
+          var bookElem = document.createElement("super-awesome-book");
+          bookElem.height = idealHeight;
+          if(book.isbn["@nil"]){
+            // No ISBN, use title and author data
+            bookElem.setAttribute("title", book.title_without_series);
+            //TODO fix author to render to left of title
+            // bookElem.setAttribute("author",book.authors.author.name);
+          }else{
+            // Yes ISBN
+            bookElem.setAttribute("isbn",book.isbn);
+          }
+          document.body.appendChild(bookElem);
+          console.log(bookElem.width);
+        }
+      })
+      .finally(console.log("done loading books!"));
+    }}
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
