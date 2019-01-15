@@ -22,6 +22,8 @@ class Book extends HTMLElement {
       // 'bottom: -4px;'+
       '}\n'+
       '#spine {background: grey;'+
+      'width: -moz-max-content;'+
+      'width: max-content;'+
       //'display: inline-block;'+
       'box-shadow: inset 0 0 0 1px black;'+
       'display: inline-flex; flex-direction: row;'+
@@ -112,13 +114,32 @@ class Book extends HTMLElement {
     }
   }
 
+  _createSpine() {
+    var spine = document.createElement('div');
+    spine.setAttribute("id","spine");
+    var title = document.createElement("h3");
+    title.setAttribute("id","title");
+    title.setAttribute("class","rotate")
+    var author = document.createElement("h5");
+    author.setAttribute("id","author");
+    author.setAttribute("class","rotate");
+    spine.appendChild(author);
+    spine.appendChild(title);
+    this.shadowRoot.appendChild(spine);
+    return spine;
+  }
+
+  _createCover() {
+    var cover = document.createElement('img');
+    cover.setAttribute("id","cover");
+    this.shadowRoot.appendChild(cover);
+    return cover;
+  }
+
   _updateRendering() {
     if(this.ownerDocument.defaultView){
       if(this._isbn){
-        var cover = this.shadowRoot.getElementById("cover");
-        if(!cover){cover = document.createElement('img');
-        cover.setAttribute("id","cover");
-        this.shadowRoot.appendChild(cover);}
+        var cover = this.shadowRoot.getElementById("cover") || this._createCover();
         cover.height = this._height;
         const path = "https://covers.openlibrary.org/b/"+this._getPathPair()+"-L.jpg?default=false";
         const cb = this._noImageCallback;
@@ -138,23 +159,12 @@ class Book extends HTMLElement {
           cb();
         });
       }else if(this._title){
-        var spine = this.shadowRoot.getElementById("spine");
-        if(!spine){spine = document.createElement('div');
-            spine.setAttribute("id","spine");
-            var title = document.createElement("h3");
-            title.setAttribute("id","title");
-            title.setAttribute("class","rotate")
-            var author = document.createElement("h5");
-            author.setAttribute("id","author");
-            author.setAttribute("class","rotate")
-            spine.appendChild(author);
-            spine.appendChild(title);
-            this.shadowRoot.appendChild(spine);}
-        author = this.shadowRoot.getElementById("author");
+        var spine = this.shadowRoot.getElementById("spine") || this._createSpine();
+        var author = this.shadowRoot.getElementById("author");
         author.textContent = this._author;
-        title = this.shadowRoot.getElementById("title");
+        var title = this.shadowRoot.getElementById("title");
         title.textContent = this._title;
-        spine.setAttribute("style","height: "+this._height+"px; width: -moz-max-content; width: max-content;");
+        spine.setAttribute("style","height: "+this._height+"px;");
       }
     }
   }
