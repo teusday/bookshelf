@@ -9,10 +9,25 @@ class Book extends HTMLElement {
     style.textContent = '.rotate {' +
       'writing-mode: vertical-rl;'+
       'margin-top: 3px;'+
-      '}'+
+      '}\n'+
+      'h5 {' +
+      'margin-right: 2px;'+
+      '}\n'+
+      'h3 {' +
+      'margin-left: 4px;'+
+      'font-size: 1.5em;'+
+      '}\n'+
+      '#cover {' +
+      // 'position: relative;'+
+      // 'bottom: -4px;'+
+      '}\n'+
       '#spine {background: grey;'+
-      'display: inline-block;'+
-      'box-shadow: inset 0 0 0 1px black;}'
+      //'display: inline-block;'+
+      'box-shadow: inset 0 0 0 1px black;'+
+      'display: inline-flex; flex-direction: row;'+
+      // 'position: relative;'+
+      // 'bottom: -23px;'+
+      '}'
 
     shadow.appendChild(style);
 

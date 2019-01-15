@@ -44,7 +44,7 @@
             // No ISBN, use title and author data
             bookElem.setAttribute("title", book.title_without_series);
             //TODO fix author to render to left of title
-            // bookElem.setAttribute("author",book.authors.author.name);
+            bookElem.setAttribute("author",book.authors.author.name);
           }else{
             // Yes ISBN
             bookElem.setAttribute("isbn",book.isbn);
@@ -57,6 +57,5 @@
     }}
     </script>
   </head>
-  <body>
-  </body>
+  <body></body>
 </html>
