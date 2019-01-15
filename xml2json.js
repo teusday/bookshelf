@@ -4,6 +4,8 @@
    Version: 0.9
 	Author:  Stefan Goessner/2006
 	Web:     http://goessner.net/
+
+  Modified Slightly 2018 by Zak Sharp
 */
 function xml2json(xml, tab) {
    var X = {
@@ -65,7 +67,7 @@ function xml2json(xml, tab) {
             o = X.toObj(xml.documentElement);
          }
          else
-            console.error("unhandled node type: " + xml.nodeType);
+            console.error("unhandled node type: " + xml.nodeType); // Dec 27 2018 - modified from alert for usability
          return o;
       },
       toJson: function(o, name, ind) {
