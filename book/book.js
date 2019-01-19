@@ -29,6 +29,9 @@ class Book extends HTMLElement {
       'display: inline-flex; flex-direction: row;'+
       // 'position: relative;'+
       // 'bottom: -23px;'+
+      '}'+
+      ':host {'+
+      'display: inline-block'+
       '}'
 
     shadow.appendChild(style);
@@ -95,6 +98,15 @@ class Book extends HTMLElement {
     this.setAttribute("height", v);
   }
 
+  async getWidth() {
+    var cover = this.shadowRoot.getElementById('cover');
+    var spine = this.shadowRoot.getElementById("spine");
+    if(cover) {
+      return this._getImageWidth(cover);}
+    else if(spine) return new Promise(resolve=>resolve(spine.offsetWidth));
+    else {console.error("no width info"); return 0;}
+  }
+
   get width() {
     var cover = this.shadowRoot.getElementById('cover');
     var spine = this.shadowRoot.getElementById("spine");
@@ -102,6 +114,32 @@ class Book extends HTMLElement {
       if(!cover.complete){console.error("bad data because cover hasn't loaded");}return cover.width;}
     else if(spine) return spine.offsetWidth;
     else {console.error("no width info"); return 0;}
+  }
+
+  async _getImageWidth(image_element) {
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+    while (!image_element.complete) {
+      console.log('Taking a break...');
+      await sleep(2000);
+      console.log('Two seconds later');
+    }
+    return new Promise(r => r(image_element.width));
+
+    // return new Promise((resolve, reject) => {
+    //         image_element.onload = () => {
+    //             resolve({
+    //                 this.width,
+    //                 status: 'ok',
+    //             });
+    //         };
+    //
+    //         image_element.onerror = () => {
+    //             reject({
+    //                 0,
+    //                 status: 'error',
+    //             });
+    //         };
+    //     });
   }
 
   _getPathPair() {
@@ -138,6 +176,7 @@ class Book extends HTMLElement {
 
   _updateRendering() {
     if(this.ownerDocument.defaultView){
+      this.style = 'height: 445px;';
       if(this._isbn){
         var cover = this.shadowRoot.getElementById("cover") || this._createCover();
         cover.height = this._height;
