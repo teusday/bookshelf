@@ -12,8 +12,14 @@
     <script src="xml2json.js" charset="utf-8"></script>
     <script type='text/javascript' src='config.secret'></script>
     <script type="text/javascript">
+    var includedIDs = [];
+    function addBook(id, element) {
+      includedIDs.push(id);
+      document.body.appendChild(element);
+    }
 
-    window.onload = function(){if (!navigator.onLine) {
+    window.onload = function(){
+      if (!navigator.onLine) {
       const offlineNotice = document.createElement("h1");
       offlineNotice.innerHTML = "No network connection detected";
       document.body.appendChild(offlineNotice);
@@ -29,7 +35,8 @@
       const w = window.innerWidth;
       const idealHeight = h/2; //TODO Actually calculate this
       //calculate number of books that ideally fit in the window
-      const bookQuantity = 12;
+      const bookQuantity = 11;
+
       var bookData = fetch("https://cors-anywhere.herokuapp.com/https://www.goodreads.com/review/list?v=2 &id="+userID+"&key="+secret.key+"&shelf=read&sort=random&per_page="+bookQuantity,
       {mode: "cors",
       headers:new Headers({'origin': 'localhost'})
@@ -50,7 +57,7 @@
             // Yes ISBN
             bookElem.setAttribute("isbn",book.isbn);
           }
-          document.body.appendChild(bookElem);
+          addBook(book.id["#text"],bookElem);
           console.log(bookElem.width);
         }
       })
